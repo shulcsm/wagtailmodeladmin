@@ -55,7 +55,12 @@ def items_for_result(view, result):
                     else:
                         result_repr = field_val
                 else:
-                    result_repr = display_for_field(value, f)
+                    try:
+                        result_repr = display_for_field(value, f)
+                    except TypeError:
+                        # https://docs.djangoproject.com/en/1.9/ref/contrib/admin/#django.contrib.admin.ModelAdmin.empty_value_display
+                        result_repr = display_for_field(value, f, "-")
+
                 if isinstance(f, (models.DateField, models.TimeField, models.ForeignKey)):
                     row_classes.append('nowrap')
         if force_text(result_repr) == '':
